@@ -26,8 +26,9 @@
 (defn only
   "Returns the first element from 's' iff it's the only element in 's'.
   If 's' is empty or contains more than 1 element, an IllegalaAgumentException
-  is thrown."
+  or js/Error is thrown."
   [s]
   (if (= 1 (count s))
     (first s)
-    (throw (IllegalArgumentException. "Sequence contains more than 1 element"))))
+    (throw #?(:clj (IllegalArgumentException. "Sequence contains more than 1 element")
+              :cljs (js/Error "Sequence contains more than 1 element")))))

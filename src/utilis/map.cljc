@@ -52,7 +52,10 @@
   The compaction is recursive, e.g.,
     (compact {:a {:b [{} {:c {}}]}}) => nil"
   [m]
-  (let [pred (fn [v] (or (nil? v) (and (seqable? v) (empty? v))))
+  (let [pred (fn [v] (or (nil? v)
+                        #?(:clj (and (seqable? v) (empty? v))
+                           :cljs (when (or (seq? v) (coll? v) (string? v))
+                                   (empty? v)))))
         res (cond->> m
               (map? m) (reduce-kv (fn [m k v]
                                     (let [val (cond

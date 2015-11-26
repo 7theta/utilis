@@ -8,16 +8,16 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any others, from this software.
 
-(ns utilis.types.boolean)
+(ns utilis.test-runner
+  (:require [doo.runner :refer-macros [doo-tests doo-all-tests]]
+            [utilis.exception-test]
+            [utilis.fn-test]
+            [utilis.map-test]
+            [utilis.string-test]
 
-(defn ->boolean
-  "Attempts to convert 'v' to a boolean. Strings equal to 'true' and 'false'
-  will be coerced to their equivalent boolean value. If 'v' cannot be converted,
-  an optional 'default' value is returned.
+            [utilis.types.bool-test]
+            [utilis.types.keyword-test]
+            [utilis.types.number-test]
+            [utilis.types.string-test]))
 
-  If no default is specified, a nil is used as the default"
-  ([v] (->boolean v nil))
-  ([v default]
-   (if (string? v)
-     (get {"true" true "false" false} v default)
-     (boolean v))))
+(doo-all-tests)

@@ -1,15 +1,16 @@
 (ns utilis.exception-test
-  (:require [utilis.exception :refer :all]
+  (:require [utilis.exception #?(:clj :refer :cljs :refer-macros) [throw-if]]
             [clojure.test.check.generators :as gen]
-            [com.gfredericks.test.chuck.clojure-test :refer [checking]]
-            [com.gfredericks.test.chuck :refer [times]]
-            #?(:clj [clojure.test :refer :all]
-               :cljs [cljs.test :refer :all :include-macros true])))
+            [com.gfredericks.test.chuck.clojure-test #?(:clj :refer :cljs :refer-macros) [checking]]
+            #?(:clj [clojure.test :refer [deftest is]]
+               :cljs [cljs.test :refer-macros [deftest is] :include-macros true])))
 
 (deftest throw-if-works
-  (checking "throw-if passes values unchanged" (times 30)
+  (checking "throw-if passes values unchanged" 30
             [v gen/any]
             (is (= v (throw-if v))))
   (checking "throw-if throws exceptions when detected" 1 []
-            (is (thrown? Throwable (throw-if (Exception. "foo"))))
-            (is (thrown? Throwable (throw-if (ex-info "foo" {}))))))
+            (is (thrown? #?(:clj Throwable :cljs js/Error)
+                         (throw-if (#?(:clj Exception. :cljs js/Error) "foo"))))
+            (is (thrown? #?(:clj Throwable :cljs js/Error)
+                         (throw-if (ex-info "foo" {}))))))
