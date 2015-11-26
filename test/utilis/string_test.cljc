@@ -1,16 +1,16 @@
-(ns utilis.types.string-test
-  (:require  [utilis.string :refer :all]
+(ns utilis.string-test
+  (:require  [utilis.string :refer [whitespace? collapse-whitespace]]
              [clojure.string :as st]
              [clojure.test.check.generators :as gen]
-             [com.gfredericks.test.chuck.clojure-test :refer [checking]]
-             [com.gfredericks.test.chuck.generators :as gen']
-             [com.gfredericks.test.chuck :refer [times]]
-             #?(:clj [clojure.test :refer :all]
-                :cljs [cljs.test :refer :all :include-macros true])))
+             #?(:clj [com.gfredericks.test.chuck.generators :as gen'])
+             [com.gfredericks.test.chuck.clojure-test #?(:clj :refer :cljs :refer-macros) [checking]]
+             #?(:clj [clojure.test :refer [deftest is]]
+                :cljs [cljs.test :refer-macros [deftest is] :include-macros true])))
 
 (deftest whitespace-should-work
-  (checking "whitespace? should detect all whitespace characters" (times 30)
-            [ws (gen'/string-from-regex #"\s+")
+  (checking "whitespace? should detect all whitespace characters" 30
+            [ws #?(:clj (gen'/string-from-regex #"\s+")
+                   :cljs (gen/elements [" " "\t" "\n"]))
              s (gen/such-that (complement whitespace?) gen/string)]
             (is (whitespace? ws))
             (is (not (whitespace? (str ws s ws))))
@@ -18,8 +18,9 @@
             (is (not (whitespace? (str ws s))))))
 
 (deftest collapse-whitespace-should-work
-  (checking "collapse-whitespace should handle various types of whitespace" (times 50)
-            [ws (gen'/string-from-regex #"\s+")
+  (checking "collapse-whitespace should handle various types of whitespace" 50
+            [ws #?(:clj (gen'/string-from-regex #"\s+")
+                   :cljs (gen/elements [" " "\t" "\n"]))
              x (gen/such-that (complement whitespace?) gen/string)
              y (gen/such-that (complement whitespace?) gen/string)
              z (gen/such-that (complement whitespace?) gen/string)]

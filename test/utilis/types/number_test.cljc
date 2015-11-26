@@ -1,17 +1,16 @@
 (ns utilis.types.number-test
-  (:require [utilis.types.number :refer :all]
+  (:require [utilis.types.number :refer [string->long string->double]]
             [utilis.types.string :refer [->string]]
             [clojure.test.check.generators :as gen]
-            [com.gfredericks.test.chuck.clojure-test :refer [checking]]
-            [com.gfredericks.test.chuck :refer [times]]
-            #?(:clj [clojure.test :refer :all]
-               :cljs [cljs.test :refer :all :include-macros true])))
+            [com.gfredericks.test.chuck.clojure-test #?(:clj :refer :cljs :refer-macros) [checking]]
+            #?(:clj [clojure.test :refer [deftest is]]
+               :cljs [cljs.test :refer-macros [deftest is] :include-macros true])))
 
 (deftest string->long-should-work
-  (checking "string->long longs converted via str" (times 50)
+  (checking "string->long longs converted via str" 50
             [x gen/int]
             (is (= x (string->long (str x)))))
-  (checking "string->long longs converted via ->string" (times 50)
+  (checking "string->long longs converted via ->string" 50
             [x gen/int]
             (is (= x (string->long (->string x)))))
 
@@ -26,10 +25,10 @@
             (is (= ::bad-string (string->long "3.14" ::bad-string)))))
 
 (deftest string->double-should-work
-  (checking "string->double longs converted via str" (times 50)
+  (checking "string->double longs converted via str" 50
             [x gen/ratio]
             (is (= (double x) (string->double (str (double x))))))
-  (checking "string->double longs converted via ->string" (times 50)
+  (checking "string->double longs converted via ->string" 50
             [x gen/ratio]
             (is (= (double x) (string->double (->string (double x))))))
 

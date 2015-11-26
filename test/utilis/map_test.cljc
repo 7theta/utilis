@@ -1,31 +1,31 @@
 (ns utilis.map-test
-  (:require [utilis.map :refer :all]
+  (:require [utilis.map :refer [map-keys map-vals compact
+                                deep-merge-with deep-merge]]
             [clojure.test.check.generators :as gen]
-            [com.gfredericks.test.chuck.clojure-test :refer [checking]]
-            [com.gfredericks.test.chuck :refer [times]]
-            #?(:clj [clojure.test :refer :all]
-               :cljs [cljs.test :refer :all :include-macros true])))
+            [com.gfredericks.test.chuck.clojure-test #?(:clj :refer :cljs :refer-macros) [checking]]
+            #?(:clj [clojure.test :refer [deftest is]]
+               :cljs [cljs.test :refer-macros [deftest is] :include-macros true])))
 
 (deftest map-keys-should-work
-  (checking "map-keys should return a map" (times 30)
+  (checking "map-keys should return a map" 30
             [m (gen/map gen/any gen/any)]
             (is (map? (map-keys identity m))))
   (checking "map-keys should handle empty maps" 1
             []
             (is (empty? (map-keys identity {}))))
-  (checking "map-keys should apply f to all keys" (times 30)
+  (checking "map-keys should apply f to all keys" 30
             [m (gen/map gen/keyword gen/any)]
             (is (->> m (map-keys name) keys set)
                 (->> m keys (map name) set))))
 
 (deftest map-vals-should-work
-  (checking "map-vals should return a map" (times 30)
+  (checking "map-vals should return a map" 30
             [m (gen/map gen/any gen/any)]
             (is (map? (map-vals identity m))))
   (checking "map-vals should handle empty maps" 1
             []
             (is (empty? (map-vals identity {}))))
-  (checking "map-vals should apply f to all values" (times 30)
+  (checking "map-vals should apply f to all values" 30
             [m (gen/map gen/any gen/keyword)]
             (let [res (map-vals (constantly nil) m)]
               (is (every? nil? (vals res)))
@@ -39,7 +39,7 @@
   (checking "compact should handle nil" 1
             []
             (is (nil? (compact nil))))
-  (checking "compact should ignore values that aren't maps" (times 30)
+  (checking "compact should ignore values that aren't maps" 20
             [not-map (gen/such-that (complement map?) gen/any)]
             (is (if (empty? not-map)
                   (nil? (compact not-map))
@@ -47,7 +47,7 @@
   (checking "compact should handle maps that can't be compacted" 1
             []
             (is (= {:a 1 :b 2} (compact {:a 1 :b 2}))))
-  (checking "compact should return a map or nil when passed a map" (times 30)
+  (checking "compact should return a map or nil when passed a map" 20
             [m (gen/map gen/any gen/any)]
             (let [cm (compact m)]
               (is (or (nil? cm) (map? cm)))))
@@ -69,7 +69,7 @@
   (checking "deep-merge-with should handle nil maps" 1
             []
             (is (nil? (deep-merge-with + nil nil nil))))
-  (checking "deep-merge-with should work the same as merge-with for shallow maps" (times 30)
+  (checking "deep-merge-with should work the same as merge-with for shallow maps" 20
             [maps (gen/vector (gen/map gen/any gen/int))]
             (is (= (apply merge-with + maps)
                    (apply deep-merge-with + maps)))))
@@ -78,7 +78,7 @@
   (checking "deep-merge should handle nil maps" 1
             []
             (is (nil? (deep-merge nil nil nil))))
-  (checking "deep-merge should work the same as merge for shallow maps" (times 30)
+  (checking "deep-merge should work the same as merge for shallow maps" 20
             [maps (gen/vector (gen/map gen/any gen/int))]
             (is (= (apply merge maps)
                    (apply deep-merge maps)))))

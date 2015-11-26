@@ -18,8 +18,10 @@
   If no default is specified, a nil is used as the default."
   ([s] (string->long s nil))
   ([s default]
-   (with-exception->value [NumberFormatException default]
-     (Long/parseLong s))))
+   #?(:clj (with-exception->value [NumberFormatException default]
+             (Long/parseLong s))
+      :cljs (let [res (js/parseInt s)]
+              (if (js/isNan res) default res)))))
 
 (defn string->double
   "Attempts to convert 's' into a double. If it cannot be converted,
@@ -28,5 +30,7 @@
   If no default is specified, a nil is used as the default."
   ([s] (string->double s nil))
   ([s default]
-   (with-exception->value [NumberFormatException default]
-     (Double/parseDouble s))))
+   #?(:clj (with-exception->value [NumberFormatException default]
+             (Double/parseDouble s))
+      :cljs (let [res (js/parseFloat s)]
+              (if (js/isNan res) default res)))))
