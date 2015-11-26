@@ -11,12 +11,6 @@
 (ns utilis.string
   (:require [clojure.string :as st]))
 
-(defn whitespace?
-  "Return a truthy value indicating whether 's' consists
-  entirely of whitespace characters."
-  [s]
-  (re-matches #"^\s*$" s))
-
 (defn collapse-whitespace
   "Replaces a trimmed version of 's' with all consecutive runs of whitespace
   characters replaced with a single space."

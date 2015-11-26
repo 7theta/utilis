@@ -1,3 +1,13 @@
+;;   Copyright (c) 7theta. All rights reserved.
+;;   The use and distribution terms for this software are covered by the
+;;   Eclipse Public License 1.0 (http://www.eclipse.org/legal/epl-v10.html)
+;;   which can be found in the file epl-v10.html at the root of this
+;;   distribution.
+;;
+;;   By using this software in any fashion, you are agreeing to be bound by
+;;   the terms of this license.
+;;   You must not remove this notice, or any others, from this software.
+
 (ns utilis.map-test
   (:require [utilis.map :refer [map-keys map-vals compact
                                 deep-merge-with deep-merge]]
@@ -60,7 +70,7 @@
                              :d {:e {:f {}}}}))))
   (checking "compact should handle empty maps and collections" 1
             []
-            (is (= nil (compact {:a {:b [{} {:c {}}]}}))))
+            (is (nil? (compact {:a {:b [{} {:c {}}]}}))))
   (checking "compact should handle collections of strings" 1
             []
             (is (= {:a ["foo" "bar"]} (compact {:a ["foo" "" "bar"]})))))
