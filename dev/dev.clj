@@ -15,4 +15,5 @@
 
             [clojure.pprint :refer [pprint]]
             [clojure.reflect :refer [reflect]]
+            [clojure.test :refer [run-tests run-all-tests]]
             [clojure.repl :refer [apropos dir doc find-doc pst source]]))
