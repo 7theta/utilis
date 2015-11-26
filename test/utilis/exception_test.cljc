@@ -9,7 +9,8 @@
   (checking "throw-if passes values unchanged" 30
             [v gen/any]
             (is (= v (throw-if v))))
-  (checking "throw-if throws exceptions when detected" 1 []
+  (checking "throw-if throws exceptions when detected" 1
+            []
             (is (thrown? #?(:clj Throwable :cljs js/Error)
                          (throw-if (#?(:clj Exception. :cljs js/Error) "foo"))))
             (is (thrown? #?(:clj Throwable :cljs js/Error)

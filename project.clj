@@ -8,7 +8,7 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any others, from this software.
 
-(defproject com.7theta/utilis "0.4.0"
+(defproject com.7theta/utilis "0.4.1"
   :description "Library of common utilities used in 7theta projects"
   :url "https://github.com/7theta/utilis"
   :license {:name "Eclipse Public License"
@@ -28,7 +28,6 @@
                         :source-paths ["src" "test"]
                         :compiler {:output-to "out/testable.js"
                                    :main utilis.test-runner
-                                   :target :nodejs
-                                   :optimizations :simple}}]}
+                                   :optimizations :advanced}}]}
   :scm {:name "git"
         :url "https://github.com/7theta/utilis"})

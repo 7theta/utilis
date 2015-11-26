@@ -20,8 +20,7 @@
   ([s default]
    #?(:clj (with-exception->value [NumberFormatException default]
              (Long/parseLong s))
-      :cljs (let [res (js/parseInt s)]
-              (if (js/isNan res) default res)))))
+      :cljs (if (re-matches #"(^-?\d+$)" s) (js/parseInt s 10) default))))
 
 (defn string->double
   "Attempts to convert 's' into a double. If it cannot be converted,
@@ -32,5 +31,4 @@
   ([s default]
    #?(:clj (with-exception->value [NumberFormatException default]
              (Double/parseDouble s))
-      :cljs (let [res (js/parseFloat s)]
-              (if (js/isNan res) default res)))))
+      :cljs (if (re-matches #"(^-?\d+(?:\.\d+)?$)" s) (js/parseFloat s 10) default))))

@@ -14,15 +14,17 @@
             [x gen/int]
             (is (= x (string->long (->string x)))))
 
-  (checking "string->long should fail on random strings" 1
-            []
-            (is (= nil (string->long "foo")))
-            (is (= ::bad-string (string->long "foo" ::bad-string))))
+  (checking "string->long should fail for non-integral values" 20
+            [x gen/ratio]
+            ;; Adding 3.14 to handle a generated 0
+            (is (= nil (string->long (str (+ 3.14 (double x))))))
+            (is (= ::bad-string (string->long (str (+ 3.14 (double x))) ::bad-string))))
 
-  (checking "string->long should fail for non-integral values" 1
-            []
-            (is (= nil (string->long "3.14")))
-            (is (= ::bad-string (string->long "3.14" ::bad-string)))))
+  (checking "string->long should fail on random strings" 20
+            [x (gen/such-that #(nil? (re-matches #"(^-?\d+$)" %))
+                              gen/string)]
+            (is (= nil (string->long x)))
+            (is (= ::bad-string (string->long x ::bad-string)))))
 
 (deftest string->double-should-work
   (checking "string->double longs converted via str" 50
@@ -32,7 +34,8 @@
             [x gen/ratio]
             (is (= (double x) (string->double (->string (double x))))))
 
-  (checking "string->double should fail on random strings" 1
-            []
-            (is (= nil (string->double "foo")))
-            (is (= ::bad-string (string->double "foo" ::bad-string)))))
+  (checking "string->double should fail on random strings" 20
+            [x (gen/such-that #(nil? (re-matches #"(^-?\d+(?:\.\d+)?$)" %))
+                              gen/string)]
+            (is (= nil (string->double x)))
+            (is (= ::bad-string (string->double x ::bad-string)))))
