@@ -13,12 +13,13 @@
              [clojure.string :as st]
              [clojure.test.check.generators :as gen]
              #?(:clj [com.gfredericks.test.chuck.generators :as gen'])
+             [com.gfredericks.test.chuck :refer [times]]
              [com.gfredericks.test.chuck.clojure-test #?(:clj :refer :cljs :refer-macros) [checking]]
              #?(:clj [clojure.test :refer [deftest is]]
                 :cljs [cljs.test :refer-macros [deftest is] :include-macros true])))
 
 (deftest collapse-whitespace-should-work
-  (checking "collapse-whitespace should handle various types of whitespace" 50
+  (checking "collapse-whitespace should handle various types of whitespace" (times 50)
             [ws #?(:clj (gen'/string-from-regex #"\s+")
                    :cljs (gen/elements [" " "\t" "\n"]))
              x (gen/such-that (complement st/blank?) gen/string)
