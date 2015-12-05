@@ -1,7 +1,7 @@
 ;;   Copyright (c) 7theta. All rights reserved.
 ;;   The use and distribution terms for this software are covered by the
 ;;   Eclipse Public License 1.0 (http://www.eclipse.org/legal/epl-v10.html)
-;;   which can be found in the file epl-v10.html at the root of this
+;;   which can be found in the LICENSE file at the root of this
 ;;   distribution.
 ;;
 ;;   By using this software in any fashion, you are agreeing to be bound by
@@ -54,10 +54,10 @@
     (compact {:a {:b [{} {:c {}}]}}) => nil"
   [m]
   (let [pred (fn [v] (or (nil? v)
-                        #?(:clj (and (seqable? v) (empty? v))
-                           :cljs (cond
-                                   (or (seq? v) (coll? v)) (empty? v)
-                                   (string? v) (blank? v)))))
+                         #?(:clj (and (seqable? v) (empty? v))
+                            :cljs (cond
+                                    (or (seq? v) (coll? v)) (empty? v)
+                                    (string? v) (blank? v)))))
         res (cond->> m
               (map? m) (reduce-kv (fn [m k v]
                                     (let [val (cond
