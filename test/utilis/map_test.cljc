@@ -70,7 +70,14 @@
 
 (deftest deep-merge-with-should-work
   (checking "deep-merge-with should handle nil maps" 1 []
-            (is (nil? (deep-merge-with + nil nil nil))))
+            (is (nil? (deep-merge-with + nil nil nil)))
+            (is (= {:foo 1} (deep-merge-with + nil {:foo 1})))
+            (is (= {:foo 1} (deep-merge-with + {:foo 1} nil)))
+            (is (= {:foo 3 :bar 1} (deep-merge-with + {:foo 1} nil {:foo 2} nil {:bar 1}))))
+  (checking "deep-merge-with should handle empty maps" 1 []
+            (is (= {} (deep-merge-with + {} {} {})))
+            (is (= {:foo 1} (deep-merge-with + {} {:foo 1})))
+            (is (= {:foo 1} (deep-merge-with + {:foo 1} {}))))
   (checking "deep-merge-with should work the same as merge-with for shallow maps" (times 20)
             [maps (gen/vector (gen/map gen/any gen/int))]
             (is (= (apply merge-with + maps)
@@ -78,7 +85,16 @@
 
 (deftest deep-merge-should-work
   (checking "deep-merge should handle nil maps" 1 []
-            (is (nil? (deep-merge nil nil nil))))
+            (is (nil? (deep-merge nil nil nil)))
+            (is (= {:foo 1} (deep-merge nil {:foo 1})))
+            (is (= {:foo 1} (deep-merge {:foo 1} nil)))
+            (is (= {:foo 2 :bar 1} (deep-merge {:foo 1} nil {:foo 2} nil {:bar 1}))))
+  (checking "deep-merge should handle empty maps" 1 []
+            (is (= {} (deep-merge {} {} {})))
+            (is (= {:foo 1} (deep-merge {} {:foo 1})))
+            (is (= {:foo 1} (deep-merge {:foo 1} {}))))
+  (checking "deep-merge should take values from last map" 1 []
+            (is (= {:foo 3} (deep-merge {:foo 1} {:foo 2} {:foo 3} nil))))
   (checking "deep-merge should work the same as merge for shallow maps" (times 20)
             [maps (gen/vector (gen/map gen/any gen/int))]
             (is (= (apply merge maps)

@@ -54,10 +54,10 @@
     (compact {:a {:b [{} {:c {}}]}}) => nil"
   [m]
   (let [pred (fn [v] (or (nil? v)
-                         #?(:clj (and (seqable? v) (empty? v))
-                            :cljs (cond
-                                    (or (seq? v) (coll? v)) (empty? v)
-                                    (string? v) (blank? v)))))
+                        #?(:clj (and (seqable? v) (empty? v))
+                           :cljs (cond
+                                   (or (seq? v) (coll? v)) (empty? v)
+                                   (string? v) (blank? v)))))
         res (cond->> m
               (map? m) (reduce-kv (fn [m k v]
                                     (let [val (cond
@@ -79,9 +79,10 @@
            (if (every? map? maps)
              (apply merge-with m maps)
              (when (some identity maps)
-               (apply f maps)))) maps))
+               (apply f maps))))
+         (remove nil? maps)))
 
 (defn deep-merge
   "Like merge, but merges 'maps' recursively."
   [& maps]
-  (apply deep-merge-with (fn [& vals] (last vals)) maps))
+  (apply deep-merge-with (fn [& vals] (->> vals (filter identity) last)) maps))
