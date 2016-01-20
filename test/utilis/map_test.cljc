@@ -25,8 +25,8 @@
             (is (empty? (map-keys identity {}))))
   (checking "map-keys should apply f to all keys" (times 30)
             [m (gen/map gen/keyword gen/any)]
-            (is (->> m (map-keys name) keys set)
-                (->> m keys (map name) set))))
+            (is (= (->> m (map-keys name) keys set)
+                   (->> m keys (map name) set)))))
 
 (deftest map-vals-should-work
   (checking "map-vals should return a map" (times 30)

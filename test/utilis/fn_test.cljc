@@ -24,7 +24,18 @@
   (checking "fsafe should not call f if any argument is nil" (times 10)
             [x (gen/vector gen/any)]
             (is (nil? (apply (fsafe vector) (conj x nil))))
-            (is (= ::didnt-call (apply (fsafe vector ::didnt-call) (conj x nil))))))
+            (is (= ::didnt-call (apply (fsafe vector ::didnt-call) (conj x nil)))))
+
+  (checking "fsafe should handle hash maps" (times 10)
+            [m (gen/hash-map gen/any gen/any)
+             k gen/any
+             v gen/any]
+            (is (= v ((fsafe (assoc m k v)) k))))
+
+  (checking "fsafe should handle sets" (times 10)
+            [s (gen/set gen/any)
+             v gen/any]
+            (is (= v ((fsafe (conj s v)) v)))))
 
 (deftest apply-kw-should-work
   (checking "apply-kw should pass the map to the function as keyword arguments" (times 10)
