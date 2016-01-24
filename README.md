@@ -15,7 +15,7 @@ please feel free to submit bug reports and requests by raising issues.
 
 ## Copyright and License
 
-Copyright © 2015 7theta
+Copyright © 2015, 2016 7theta
 
 Distributed under the Eclipse Public License.
 
