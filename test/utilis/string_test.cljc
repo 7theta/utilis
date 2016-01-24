@@ -12,7 +12,6 @@
   (:require  [utilis.string :refer [collapse-whitespace]]
              [clojure.string :as st]
              [clojure.test.check.generators :as gen]
-             #?(:clj [com.gfredericks.test.chuck.generators :as gen'])
              [com.gfredericks.test.chuck :refer [times]]
              [com.gfredericks.test.chuck.clojure-test #?(:clj :refer :cljs :refer-macros) [checking]]
              #?(:clj [clojure.test :refer [deftest is]]
@@ -20,8 +19,7 @@
 
 (deftest collapse-whitespace-should-work
   (checking "collapse-whitespace should handle various types of whitespace" (times 50)
-            [ws #?(:clj (gen'/string-from-regex #"\s+")
-                   :cljs (gen/elements [" " "\t" "\n"]))
+            [ws (gen/elements [" " "\t" "\r" "\n" "\f"])
              x (gen/such-that (complement st/blank?) gen/string)
              y (gen/such-that (complement st/blank?) gen/string)
              z (gen/such-that (complement st/blank?) gen/string)]
