@@ -36,10 +36,8 @@
             (is (empty? (map-vals identity {}))))
   (checking "map-vals should apply f to all values" (times 30)
             [m (gen/map gen/any gen/keyword)]
-            (let [res (map-vals (constantly nil) m)]
-              (is (every? nil? (vals res)))
-              (is (->> m (map-vals name) vals set)
-                  (->> m vals (map name) set)))))
+            (is (= (->> m (map-vals name) vals set)
+                   (->> m vals (map name) set)))))
 
 (deftest compact-should-work
   (checking "compact should handle empty maps" 1 []
