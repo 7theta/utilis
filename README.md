@@ -1,12 +1,9 @@
 # com.7theta/utilis
 
+[![Current Version](https://img.shields.io/clojars/v/com.7theta/utilis.svg)](https://clojars.org/com.7theta/utilis)
+[![Circle CI](https://circleci.com/gh/7theta/utilis.svg?style=shield)](https://circleci.com/gh/7theta/utilis)
+
 Utilities used across a variety of projects for clojure and clojurescript.
-
-## Installation
-
-Via Clojars: http://clojars.org/com.7theta/utilis
-
-[![Current Version](https://clojars.org/com.7theta/utilis/latest-version.svg)](https://clojars.org/com.7theta/utilis)
 
 ## Contributing
 
