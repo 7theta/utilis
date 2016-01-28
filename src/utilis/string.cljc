@@ -16,3 +16,8 @@
   characters replaced with a single space."
   [s]
   (st/trim (st/replace s #"\s+" " ")))
+
+(defn numeric?
+  "Returns a boolean indicating whether 's' represents a numeric value"
+  [s]
+  (boolean (re-matches #"(?:NaN|-?(?:(?:\d+|\d*(\.|/)\d+)(?:[E|e][+|-]?\d+)?|Infinity))" s)))
