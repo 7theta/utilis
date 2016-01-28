@@ -9,7 +9,7 @@
 ;;   You must not remove this notice, or any others, from this software.
 
 (ns utilis.string-test
-  (:require  [utilis.string :refer [collapse-whitespace]]
+  (:require  [utilis.string :refer [collapse-whitespace numeric?]]
              [clojure.string :as st]
              [clojure.test.check.generators :as gen]
              [com.gfredericks.test.chuck :refer [times]]
@@ -27,3 +27,17 @@
                                        y (repeat (inc (rand-int 10)) ws)
                                        z))]
               (is (not-any? st/blank? (st/split (collapse-whitespace s) #"\s"))))))
+
+(deftest numeric-should-work
+  (checking "numeric? should return true for all numbers" (times 50)
+            [i (gen/fmap str gen/int)
+             d (gen/fmap str gen/double)
+             r (gen/fmap str gen/ratio)]
+            (is (= true (numeric? i)))
+            (is (= true (numeric? d)))
+            (is (= true (numeric? r))))
+  (checking "numeric? should return false for other strings" (times 50)
+            [s (gen/such-that
+                #(nil? (re-matches #"(?:NaN|-?(?:(?:\d+|\d*(\.|/)\d+)(?:[E|e][+|-]?\d+)?|Infinity))" %))
+                gen/string)]
+            (is (= false (numeric? s)))))
