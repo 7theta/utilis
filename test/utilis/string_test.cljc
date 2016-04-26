@@ -29,15 +29,19 @@
               (is (not-any? st/blank? (st/split (collapse-whitespace s) #"\s"))))))
 
 (deftest numeric-should-work
-  (checking "numeric? should return true for all numbers" (times 50)
-            [i (gen/fmap str gen/int)
-             d (gen/fmap str gen/double)
-             r (gen/fmap str gen/ratio)]
-            (is (= true (numeric? i)))
-            (is (= true (numeric? d)))
+  (checking "numeric? should return true for integers" (times 50)
+            [i (gen/fmap str gen/int)]
+            (is (= true (numeric? i))))
+  (checking "numeric? should return true for floating point numbers" (times 50)
+            [d (gen/fmap str gen/double)]
+            (is (= true (numeric? d))))
+  (checking "numeric? should return true for ratios" (times 50)
+            [r (gen/fmap str gen/ratio)]
             (is (= true (numeric? r))))
-  (checking "numeric? should return false for other strings" (times 50)
-            [s (gen/such-that
-                #(nil? (re-matches #"(?:NaN|-?(?:(?:\d+|\d*(\.|/)\d+)(?:[E|e][+|-]?\d+)?|Infinity))" %))
-                gen/string)]
-            (is (= false (numeric? s)))))
+  (let [numeric-re #"(?:NaN|-?(?:(?:\d+|\d*(\.|/)\d+)(?:[E|e][+|-]?\d+)?|Infinity))"]
+    (checking "numeric? should return false for other strings" (times 50)
+              [s (gen/such-that
+                  #(not (boolean #?(:clj (re-matches numeric-re %)
+                                    :cljs (.exec (js/RegExp. (.-source numeric-re)) %))))
+                  gen/string)]
+              (is (= false (numeric? s))))))

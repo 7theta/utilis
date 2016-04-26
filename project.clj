@@ -8,13 +8,13 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any others, from this software.
 
-(defproject com.7theta/utilis "0.6.0"
+(defproject com.7theta/utilis "0.6.1"
   :description "Library of common utilities used in 7theta projects"
   :url "https://github.com/7theta/utilis"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.8.34"]]
+                 [org.clojure/clojurescript "1.8.51"]]
   :profiles {:dev {:global-vars {*warn-on-reflection* true}
                    :plugins [[lein-cljsbuild "1.1.3"]
                              [lein-doo "0.1.6"]]

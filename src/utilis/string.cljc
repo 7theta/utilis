@@ -20,4 +20,7 @@
 (defn numeric?
   "Returns a boolean indicating whether 's' represents a numeric value"
   [s]
-  (boolean (re-matches #"(?:NaN|-?(?:(?:\d+|\d*(\.|/)\d+)(?:[E|e][+|-]?\d+)?|Infinity))" s)))
+  (let [re #"(?:NaN|-?(?:(?:\d+|\d*(\.|/)\d+)(?:[E|e][+|-]?\d+)?|Infinity))"]
+    (boolean
+     #?(:clj (re-matches re s)
+        :cljs (.exec (js/RegExp. (.-source re)) s)))))
