@@ -24,3 +24,8 @@
     (boolean
      #?(:clj (re-matches re s)
         :cljs (.exec (js/RegExp. (.-source re)) s)))))
+
+(defn ensure-ends-with
+  "Add 'suffix' to 's' if 's' does not already end with 'suffix'"
+  [s suffix]
+  (cond-> s (not (st/ends-with? s suffix)) (str suffix)))
