@@ -25,11 +25,11 @@
 
 (defn only
   "Returns the first element from 's' iff it's the only element in 's'.
-  If 's' is empty or contains more than 1 element, an IllegalaAgumentException
+  If 's' does not contain exactly 1 element, an IllegalAgumentException
   or js/Error is thrown. The message for the exceptions can be optionally
   specified."
   ([s]
-   (only s "Sequence contains more than 1 element"))
+   (only s "Sequence does not contain exactly 1 element"))
   ([s exception-message]
    (if (= 1 (count s))
      (first s)

@@ -9,7 +9,7 @@
 ;;   You must not remove this notice, or any others, from this software.
 
 (ns utilis.string-test
-  (:require  [utilis.string :refer [collapse-whitespace numeric?]]
+  (:require  [utilis.string :refer [collapse-whitespace numeric? ensure-ends-with]]
              [clojure.string :as st]
              [clojure.test.check.generators :as gen]
              [com.gfredericks.test.chuck :refer [times]]
@@ -45,3 +45,13 @@
                                     :cljs (.exec (js/RegExp. (.-source numeric-re)) %))))
                   gen/string)]
               (is (= false (numeric? s))))))
+
+(deftest ensure-ends-with-should-work
+  (checking "ensure-ends-with should handle any kind of strings" (times 50)
+            [s gen/string
+             suffix gen/string]
+            (if (st/ends-with? s suffix)
+              (= s (ensure-ends-with s suffix))
+              (= (str s suffix)
+                 (ensure-ends-with s suffix)
+                 (ensure-ends-with (ensure-ends-with s suffix) suffix)))))
