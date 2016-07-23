@@ -31,7 +31,7 @@
   ([s]
    (only s "Sequence does not contain exactly 1 element"))
   ([s exception-message]
-   (if (= 1 (count s))
-     (first s)
+   (if (or (not (seq s)) (seq (rest s)))
      (throw #?(:clj (IllegalArgumentException. ^String exception-message)
-               :cljs (js/Error exception-message))))))
+               :cljs (js/Error exception-message)))
+     (first s))))
