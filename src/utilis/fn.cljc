@@ -21,7 +21,6 @@
    (fn [& args]
      (if (or (nil? f) (some nil? args)) default (apply f args)))))
 
-
 (defn apply-kw
   "Applies the fn 'f' to the argument list provided treating the last argument
   as a map containing the keyword arguments for 'f'."
