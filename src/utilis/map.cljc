@@ -59,13 +59,14 @@
                                    (or (seq? v) (coll? v)) (empty? v)
                                    (string? v) (blank? v)))))
         res (cond->> m
-              (map? m) (reduce-kv (fn [m k v]
-                                    (let [val (cond
-                                                (map? v) (compact v)
-                                                (coll? v) (keep compact v)
-                                                :else v)]
-                                      (cond-> m (not (pred val)) (assoc k val))))
-                                  {}))]
+              (and (map? m) (not (record? m)))
+              (reduce-kv (fn [m k v]
+                           (let [val (cond
+                                       (map? v) (compact v)
+                                       (coll? v) (keep compact v)
+                                       :else v)]
+                             (cond-> m (not (pred val)) (assoc k val))))
+                         {}))]
     (when-not (pred res) res)))
 
 (defn deep-merge-with
