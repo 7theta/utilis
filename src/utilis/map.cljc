@@ -63,7 +63,7 @@
               (reduce-kv (fn [m k v]
                            (let [val (cond
                                        (map? v) (compact v)
-                                       (coll? v) (keep compact v)
+                                       (coll? v) (into (empty v) (keep compact v))
                                        :else v)]
                              (cond-> m (not (pred val)) (assoc k val))))
                          {}))]
