@@ -8,20 +8,7 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any others, from this software.
 
-(ns utilis.coll
-  (:refer-clojure :exclude [doseq]))
-
-#?(:clj
-   (defn seqable?
-     "Returns true if (seq x) will succeed, false otherwise."
-     [x]
-     (or (seq? x)
-         (instance? clojure.lang.Seqable x)
-         (nil? x)
-         (instance? Iterable x)
-         (.isArray (.getClass ^Object x))
-         (string? x)
-         (instance? java.util.Map x))))
+(ns utilis.coll)
 
 (defn only
   "Returns the first element from 's' iff it's the only element in 's'.

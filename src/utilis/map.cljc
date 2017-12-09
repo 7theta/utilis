@@ -9,8 +9,7 @@
 ;;   You must not remove this notice, or any others, from this software.
 
 (ns utilis.map
-  (:require #?(:clj [utilis.coll :refer [seqable?]])
-            [clojure.string :refer [blank?]]))
+  (:require [clojure.string :refer [blank?]]))
 
 (defn assoc-if
   "Conditionally assoc `val` into `map` at `key` if `val` passes the test
