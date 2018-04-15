@@ -85,4 +85,4 @@
 (defn deep-merge
   "Like merge, but merges 'maps' recursively."
   [& maps]
-  (apply deep-merge-with (fn [& vals] (->> vals (filter identity) last)) maps))
+  (apply deep-merge-with (fn [& vals] (last vals)) maps))
