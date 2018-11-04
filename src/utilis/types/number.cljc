@@ -9,7 +9,7 @@
 ;;   You must not remove this notice, or any others, from this software.
 
 (ns utilis.types.number
-  (:require [utilis.exception :refer [with-exception->value]]))
+  (:require #?(:clj [utilis.exception :refer [with-exception->value]])))
 
 (defn string->long
   "Attempts to convert 's' into a long. If it cannot be converted,
