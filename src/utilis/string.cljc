@@ -37,7 +37,7 @@
   (cond-> s (not (st/ends-with? s suffix)) (str suffix)))
 
 (defn split
-  "Splits a string 's' on the regular expression 're'. Optionally
+  "Splits a string 's' on the regular expression 're'. Optional
   :quote-chars can be provided to avoid splitting the string within
   quoted sections."
   [s re & {:keys [quote-chars]}]
