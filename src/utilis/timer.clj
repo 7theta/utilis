@@ -11,7 +11,7 @@
 (ns utilis.timer
   (:import [java.util Timer TimerTask]))
 
-(defonce ^:private ^Timer timer (Timer. "utilis.timer/timer-thread"))
+(defonce ^:private timer (delay (Timer. "utilis.timer/timer-thread")))
 
 (defn run-after
   "Runs `f` after `delay-ms` have elapsed"
@@ -19,7 +19,7 @@
   (let [^TimerTask task (proxy [TimerTask] []
                           (run []
                             (f)))]
-    (.schedule timer task ^long delay-ms)
+    (.schedule ^Timer @timer task ^long delay-ms)
     task))
 
 (defn cancel
