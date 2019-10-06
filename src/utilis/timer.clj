@@ -22,6 +22,15 @@
     (.schedule ^Timer @timer task ^long delay-ms)
     task))
 
+(defn run-every
+  "Runs `f` every `interval-ms` until cancelled"
+  [f interval-ms]
+  (let [^TimerTask task (proxy [TimerTask] []
+                          (run []
+                            (f)))]
+    (.schedule ^Timer @timer task ^long interval-ms ^long interval-ms)
+    task))
+
 (defn cancel
   "Cancels a previously scheduled execution of a `task`"
   [^TimerTask task]

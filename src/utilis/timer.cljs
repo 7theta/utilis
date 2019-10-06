@@ -13,9 +13,18 @@
 (defn run-after
   "Runs `f` after `delay-ms` have elapsed"
   [f delay-ms]
-  (js/setTimeout f delay-ms))
+  {:type :timeout
+   :timer (js/setTimeout f delay-ms)})
+
+(defn run-every
+  "Runs `f` every `interval-ms` until cancelled"
+  [f interval-ms]
+  {:type :interval
+   :timer (js/setInterval f interval-ms)})
 
 (defn cancel
   "Cancels a previously scheduled execution of a `task`"
   [task]
-  (js/clearTimeout task))
+  ((case (:type task)
+     :timeout js/clearTimeout
+     :interval js/clearInterval) (:timer task)))

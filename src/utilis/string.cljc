@@ -9,8 +9,11 @@
 ;;   You must not remove this notice, or any others, from this software.
 
 (ns utilis.string
+  (:refer-clojure :exclude [format])
   (:require [utilis.fn :refer [fsafe]]
-            [clojure.string :as st]))
+            [clojure.string :as st]
+            #?@(:cljs [[goog.string :as gstring]
+                       [goog.string.format]])))
 
 (defn collapse-whitespace
   "Replaces a trimmed version of 's' with all consecutive runs of whitespace
@@ -78,3 +81,6 @@
            (remove empty?)
            vec))
     (st/split s re)))
+
+(def format #?(:clj clojure.core/format
+               :cljs gstring/format))
