@@ -14,7 +14,8 @@
 
 (defn get
   [object key]
-  (go/get object (clj->js key)))
+  (when object
+    (go/get object (clj->js key))))
 
 (defn get-in
   [object path]
