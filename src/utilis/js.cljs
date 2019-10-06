@@ -9,10 +9,25 @@
 ;;   You must not remove this notice, or any others, from this software.
 
 (ns utilis.js
-  (:refer-clojure :exclude [get-in])
+  (:refer-clojure :exclude [get-in get])
   (:require [goog.object :as go]))
 
+(defn get
+  [object key]
+  (when object
+    (go/get object (clj->js key))))
+
 (defn get-in
-  ([object path]
-   (when object
-     (go/getValueByKeys object (clj->js path)))))
+  [object path]
+  (when object
+    (go/getValueByKeys object (clj->js path))))
+
+(defn call
+  [object key & args]
+  (apply js-invoke object (clj->js key) (clj->js args)))
+
+(defn call-in
+  [object path & args]
+  (if (= 1 (count path))
+    (apply call object (first path) args)
+    (apply call (get-in object (drop-last path)) (last path) args)))
