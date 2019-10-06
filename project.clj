@@ -8,7 +8,7 @@
 ;;   the terms of this license.
 ;;   You must not remove this notice, or any others, from this software.
 
-(defproject com.7theta/utilis "1.5.1"
+(defproject com.7theta/utilis "1.6.0"
   :description "Library of common utilities used in 7theta projects"
   :url "https://github.com/7theta/utilis"
   :license {:name "Eclipse Public License"
