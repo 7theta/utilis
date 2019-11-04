@@ -9,18 +9,22 @@
 ;;   You must not remove this notice, or any others, from this software.
 
 (ns utilis.js
-  (:refer-clojure :exclude [get-in get])
+  (:refer-clojure :exclude [get get-in assoc! assoc-in!])
   (:require [goog.object :as go]))
 
 (defn get
-  [object key]
-  (when object
-    (go/get object (clj->js key))))
+  ([object key]
+   (get object key nil))
+  ([object key default]
+   (when object
+     (go/get object (clj->js key) default))))
 
 (defn get-in
-  [object path]
-  (when object
-    (go/getValueByKeys object (clj->js path))))
+  ([object path]
+   (get-in object path nil))
+  ([object path default]
+   (when object
+     (or (go/getValueByKeys object (clj->js path)) default))))
 
 (defn call
   [object key & args]
@@ -31,3 +35,16 @@
   (if (= 1 (count path))
     (apply call object (first path) args)
     (apply call (get-in object (drop-last path)) (last path) args)))
+
+(defn assoc!
+  [object & keyvals]
+  (let [object (if (nil? object) #js {} object)]
+    (loop [[k v & kvs] keyvals]
+      (go/set object (clojure.core/name k) v)
+      (if kvs (recur kvs) object))))
+
+(defn assoc-in!
+  [object [key & rest-path :as key-path] value]
+  (if (not-empty rest-path)
+    (assoc! object key (assoc-in! (get object key #js {}) rest-path value))
+    (assoc! object key value)))

@@ -44,11 +44,6 @@
             (is (nil? (compact {}))))
   (checking "compact should handle nil" 1 []
             (is (nil? (compact nil))))
-  (checking "compact should ignore values that aren't maps" (times 20)
-            [not-map (gen/such-that (complement map?) gen/any)]
-            (is (if (empty? not-map)
-                  (nil? (compact not-map))
-                  (identical? not-map (compact not-map)))))
   (checking "compact should handle maps that can't be compacted" 1 []
             (is (= {:a 1 :b 2} (compact {:a 1 :b 2}))))
   (checking "compact should return a map or nil when passed a map" (times 20)

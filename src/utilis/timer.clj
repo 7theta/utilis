@@ -34,4 +34,4 @@
 (defn cancel
   "Cancels a previously scheduled execution of a `task`"
   [^TimerTask task]
-  (.cancel task))
+  (try (.cancel task) (catch IllegalStateException _ nil)))
