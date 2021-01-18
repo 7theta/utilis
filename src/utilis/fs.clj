@@ -16,40 +16,50 @@
            [java.nio.file Files]
            [java.net URLEncoder]))
 
-(defn ls-r
-  [^String dir]
-  (->> dir io/file file-seq))
+(declare coerce)
+
+(defn ls
+  [path & {:keys [recursive]}]
+  (if recursive
+    (->> (coerce path) file-seq)
+    (->> (coerce path) (.listFiles) seq)))
 
 (defn mkdir
-  [^String dir]
-  (let [dir (io/file dir)]
-    (.mkdir dir)))
+  [path & {:keys [recursive]}]
+  (if recursive (.mkdirs (coerce path)) (.mkdir (coerce path))))
 
-(defn mkdir-p
-  [^String dir]
-  (let [dir (io/file dir)]
-    (when (not (.exists dir))
-      (.mkdir dir))))
+(defn rm
+  [path & {:keys [recursive]}]
+  (if recursive
+    (->> (ls path :recursive true) reverse (map (comp boolean (memfn delete))) (every? true?))
+    (.delete (coerce path))))
 
 (defn directory?
-  [^File file]
-  (.isDirectory file))
+  [path]
+  (.isDirectory (coerce path)))
 
 (defn file?
-  [^File file]
-  (.isFile file))
+  [path]
+  (.isFile (coerce path)))
 
 (defn mime-type
-  [^File file]
-  (let [file (if (string? file) (io/file file) file)]
-    (try (or (->> file (.toPath) (Files/probeContentType))
-             (->> file str URLEncoder/encode io/file (.toPath) (Files/probeContentType)))
+  [path]
+  (let [path (coerce path)]
+    (try (or (->> path (.toPath) (Files/probeContentType))
+             (->> path str URLEncoder/encode io/file (.toPath) (Files/probeContentType)))
          (catch java.io.EOFException e nil))))
 
 (defn image?
-  [^File file]
-  (= "image" (first ((fsafe st/split) (mime-type file) #"/"))))
+  [path]
+  (= "image" (first ((fsafe st/split) (mime-type (coerce path)) #"/"))))
 
 (defn video?
-  [^File file]
-  (= "video" (first ((fsafe st/split) (mime-type file) #"/"))))
+  [path]
+  (= "video" (first ((fsafe st/split) (mime-type (coerce path)) #"/"))))
+
+
+;;; Private
+
+(defn- ^File coerce
+  [path]
+  (cond-> path (string? path) io/file))
