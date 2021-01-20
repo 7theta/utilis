@@ -57,6 +57,22 @@
   [path]
   (= "video" (first ((fsafe st/split) (mime-type (coerce path)) #"/"))))
 
+(defmacro with-temp
+  "bindings => [name ...]
+  Evaluates body name(s) bound to temporary java.io.File objects
+  in a location appropriate for the operating system. The temporary
+  files are deleted in reverse order when exiting scope."
+  [bindings & body]
+  (cond
+    (= (count bindings) 0) `(do ~@body)
+    (symbol? (first bindings)) `(let [~(first bindings) (java.io.File/createTempFile (str (gensym)) nil)]
+                                  (try
+                                    (with-temp ~(rest bindings) ~@body)
+                                    (finally
+                                      (. ~(first bindings) delete))))
+    :else (throw (IllegalArgumentException.
+                  "with-temp only allows Symbols in bindings"))))
+
 
 ;;; Private
 
