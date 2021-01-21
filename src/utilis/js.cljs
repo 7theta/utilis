@@ -48,3 +48,11 @@
   (if (not-empty rest-path)
     (assoc! object key (assoc-in! (get object key #js {}) rest-path value))
     (assoc! object key value)))
+
+(defn platform
+  []
+  (cond
+    (exists? js/document) :web
+    (and (exists? js/navigator)
+         (= (.-product js/navigator) "ReactNative")) :react-native
+    :else :nodejs))
