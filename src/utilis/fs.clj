@@ -22,29 +22,31 @@
   [path & {:keys [recursive]}]
   (if recursive
     (->> (coerce path) file-seq)
-    (->> (coerce path) (.listFiles) seq)))
+    (->> (coerce path) (#(.listFiles ^File %)) seq)))
 
 (defn mkdir
   [path & {:keys [recursive]}]
-  (if recursive (.mkdirs (coerce path)) (.mkdir (coerce path))))
+  (if recursive (.mkdirs ^File (coerce path)) (.mkdir ^File (coerce path))))
 
 (defn rm
   [path & {:keys [recursive]}]
   (if recursive
-    (->> (ls path :recursive true) reverse (map (comp boolean (memfn delete))) (every? true?))
-    (.delete (coerce path))))
+    (->> (ls path :recursive true) reverse
+         (map #(boolean (.delete ^File %)))
+         (every? true?))
+    (.delete ^File (coerce path))))
 
 (defn directory?
   [path]
-  (.isDirectory (coerce path)))
+  (.isDirectory ^File (coerce path)))
 
 (defn file?
   [path]
-  (.isFile (coerce path)))
+  (.isFile ^File (coerce path)))
 
 (defn mime-type
   [path]
-  (let [path (coerce path)]
+  (let [^File path (coerce path)]
     (try (or (->> path (.toPath) (Files/probeContentType))
              (->> path str URLEncoder/encode io/file (.toPath) (Files/probeContentType)))
          (catch java.io.EOFException e nil))))
@@ -63,15 +65,23 @@
   in a location appropriate for the operating system. The temporary
   files are deleted in reverse order when exiting scope."
   [bindings & body]
-  (cond
-    (= (count bindings) 0) `(do ~@body)
-    (symbol? (first bindings)) `(let [~(first bindings) (java.io.File/createTempFile (str (gensym)) nil)]
-                                  (try
-                                    (with-temp ~(rest bindings) ~@body)
-                                    (finally
-                                      (. ~(first bindings) delete))))
-    :else (throw (IllegalArgumentException.
-                  "with-temp only allows Symbols in bindings"))))
+  (when-not (every? symbol? bindings)
+    (throw (IllegalArgumentException.
+            "with-temp only allows Symbols in bindings")))
+  (let [temp-dir (gensym)]
+    `(let [~temp-dir (java.nio.file.Files/createTempDirectory
+                      (str (gensym))
+                      (make-array java.nio.file.attribute.FileAttribute 0))]
+       (try
+         (let ~(->> bindings
+                    (map-indexed (fn [i b]
+                                   [b `(.toFile (.resolve ~temp-dir (str ~i)))]))
+                    (reduce concat)
+                    vec)
+           (try
+             ~@body
+             (finally ~@(map (fn [b] `(.delete ^java.io.File ~b)) (reverse bindings)))))
+         (finally (java.nio.file.Files/delete ~temp-dir))))))
 
 
 ;;; Private
