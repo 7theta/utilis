@@ -14,12 +14,13 @@
 
 (defmacro version
   "Returns the version of the running jar"
-  [jar-name]
-  `(or
-    (System/getProperty (str ~jar-name ".version"))
-    (let [path# (str "META-INF/maven/" ~jar-name "/" ~jar-name "/pom.properties")
-          props# (io/resource path#)]
-      (when props#
-        (with-open [stream# (io/input-stream props#)]
-          (let [props# (doto (Properties.) (.load stream#))]
-            (.getProperty props# "version")))))))
+  ([jar-name] `(version ~jar-name ~jar-name))
+  ([group-name jar-name]
+   `(or
+     (System/getProperty (str ~jar-name ".version"))
+     (let [path# (str "META-INF/maven/" ~group-name "/" ~jar-name "/pom.properties")
+           props# (io/resource path#)]
+       (when props#
+         (with-open [stream# (io/input-stream props#)]
+           (let [props# (doto (Properties.) (.load stream#))]
+             (.getProperty props# "version"))))))))
